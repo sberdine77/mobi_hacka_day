@@ -125,11 +125,11 @@ public class Main {
 			System.out.println(mystatement.getName() + " events " + (newData == null ? " null " : newData.length));
 			String latitude = (String) newData[0].get("latitude");
 			String longitude = (String) newData[0].get("longitude");
-			String location = latitude + ", " + longitude;
+			String location = latitude + longitude;
 			for (Session s : peers) {
 				if (s.getId().equals(sessionId)) {
 					try {
-						s.getBasicRemote().sendText(location);
+						s.getBasicRemote().sendText(location );
 					}  catch (IOException e) {
 						e.printStackTrace();
 					}

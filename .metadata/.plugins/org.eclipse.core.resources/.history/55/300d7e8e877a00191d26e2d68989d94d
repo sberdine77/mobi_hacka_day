@@ -96,6 +96,7 @@ public class Main {
 	}
 	
 	public void getLogFromBusId (int id, String sessionId) throws IOException, TimeoutException {
+		String location = null;
 		
 		EPCompiler compiler = EPCompilerProvider.getCompiler();
 		Configuration configuration = new Configuration();
@@ -120,23 +121,8 @@ public class Main {
 		EPStatement statement = runtime.getDeploymentService().getStatement(deployment.getDeploymentId(), "maior-que-25");
 		
 		EsperListener listener = new EsperListener();
-		//statement.addListener((UpdateListener) listener);
-		statement.addListener((newData, oldData, mystatement, myruntime) -> {
-			System.out.println(mystatement.getName() + " events " + (newData == null ? " null " : newData.length));
-			String latitude = (String) newData[0].get("latitude");
-			String longitude = (String) newData[0].get("longitude");
-			String location = latitude + ", " + longitude;
-			for (Session s : peers) {
-				if (s.getId().equals(sessionId)) {
-					try {
-						s.getBasicRemote().sendText(location);
-					}  catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		});
-		//listeners.add((UpdateListener) listener);
+		statement.addListener((UpdateListener) listener);
+		listeners.add((UpdateListener) listener);
 		
 		//rabbitmq
 		ConnectionFactory factory = new ConnectionFactory();
@@ -159,7 +145,15 @@ public class Main {
 	    //rabbitmq_end
 	    
 		
-		
+		for (Session s : peers) {
+			if (s.getId().equals(sessionId)) {
+				try {
+					s.getBasicRemote().sendText(location);
+				}  catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	public void getLogFromAllBuses () {
