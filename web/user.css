@@ -1,0 +1,10 @@
+button, form, p{
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+.chegando{
+    font-size: 30px;
+    color: crimson;
+    font-weight: bold;
+}
