@@ -124,7 +124,6 @@ public class Main {
 		statement.addListener((UpdateListener) listener);
 		listeners.add((UpdateListener) listener);
 		
-		//rabbitmq
 		ConnectionFactory factory = new ConnectionFactory();
 	    factory.setHost("localhost");
 	    Connection connection = factory.newConnection();
@@ -142,8 +141,6 @@ public class Main {
 	        System.out.println(" [x] Received '" + message + "'");
 	    };
 	    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
-	    //rabbitmq_end
-	    
 		
 		for (Session s : peers) {
 			if (s.getId().equals(sessionId)) {
