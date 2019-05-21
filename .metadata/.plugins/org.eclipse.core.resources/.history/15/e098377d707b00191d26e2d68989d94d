@@ -39,8 +39,6 @@ public class Main {
 	
 	private static List<UpdateListener> listeners = new ArrayList<UpdateListener>();
 	private static Set<Session> peers = Collections.synchronizedSet(new HashSet());
-	private EPCompiler compiler = EPCompilerProvider.getCompiler();
-	private static Configuration configuration = new Configuration();
 	
 	private final static String QUEUE_NAME = "hello";
 	
@@ -68,10 +66,6 @@ public class Main {
 	
 	public static void main (String args[]) throws IOException, TimeoutException {
 		
-		configuration.getCommon().addEventType(Log.class);
-		
-		EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(configuration);
-		
 		ConnectionFactory factory = new ConnectionFactory();
 	    factory.setHost("localhost");
 	    Connection connection = factory.newConnection();
@@ -85,8 +79,6 @@ public class Main {
 	        System.out.println(" [x] Received '" + message + "'");
 	        Gson g = new Gson();
 	        Log log = g.fromJson(message, Log.class);
-	        runtime.getEventService().sendEventBean(log, "Log");
-	        
 	    };
 	    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
 		
@@ -109,7 +101,8 @@ public class Main {
 	
 	public void getLogFromBusId (int id, String sessionId) throws IOException, TimeoutException {
 		
-		
+		EPCompiler compiler = EPCompilerProvider.getCompiler();
+		Configuration configuration = new Configuration();
 		configuration.getCommon().addEventType(Log.class);
 
 		CompilerArguments cargs = new CompilerArguments(configuration);

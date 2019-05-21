@@ -39,8 +39,6 @@ public class Main {
 	
 	private static List<UpdateListener> listeners = new ArrayList<UpdateListener>();
 	private static Set<Session> peers = Collections.synchronizedSet(new HashSet());
-	private EPCompiler compiler = EPCompilerProvider.getCompiler();
-	private static Configuration configuration = new Configuration();
 	
 	private final static String QUEUE_NAME = "hello";
 	
@@ -66,29 +64,9 @@ public class Main {
 	}
 	
 	
-	public static void main (String args[]) throws IOException, TimeoutException {
+	public static void main (String args[]) {
 		
-		configuration.getCommon().addEventType(Log.class);
 		
-		EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(configuration);
-		
-		ConnectionFactory factory = new ConnectionFactory();
-	    factory.setHost("localhost");
-	    Connection connection = factory.newConnection();
-	    Channel channel = connection.createChannel();
-
-	    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-	    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-	    
-	    DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-	        String message = new String(delivery.getBody(), "UTF-8");
-	        System.out.println(" [x] Received '" + message + "'");
-	        Gson g = new Gson();
-	        Log log = g.fromJson(message, Log.class);
-	        runtime.getEventService().sendEventBean(log, "Log");
-	        
-	    };
-	    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
 		
 		/*new Thread(new Runnable() {
 			public void run() {
@@ -109,7 +87,8 @@ public class Main {
 	
 	public void getLogFromBusId (int id, String sessionId) throws IOException, TimeoutException {
 		
-		
+		EPCompiler compiler = EPCompilerProvider.getCompiler();
+		Configuration configuration = new Configuration();
 		configuration.getCommon().addEventType(Log.class);
 
 		CompilerArguments cargs = new CompilerArguments(configuration);
@@ -117,7 +96,7 @@ public class Main {
 		
 		try {
 			String str = "@name('getLogFromBusId') select * from Log where id =  " + Integer.toString(id);
-			epCompiled = compiler.compile(str, cargs);
+			epCompiled = compiler.compile(, cargs);
 		} catch (EPCompileException ex) {
 			throw new RuntimeException(ex);
 		}

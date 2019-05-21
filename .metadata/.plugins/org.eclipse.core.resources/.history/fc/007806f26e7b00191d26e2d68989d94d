@@ -1,0 +1,19 @@
+import com.espertech.esper.common.client.EventBean;
+import com.espertech.esper.runtime.client.EPRuntime;
+import com.espertech.esper.runtime.client.EPStatement;
+import com.espertech.esper.runtime.client.UpdateListener;
+
+public class EsperListener implements UpdateListener {
+	
+	public EsperListener () {
+		
+	}
+	
+		@Override
+		public void update(EventBean[] newEvents, EventBean[] oldEvents, EPStatement statment, EPRuntime runtime) {
+			// TODO Auto-generated method stub
+			EventBean event = newEvents[0];
+			System.out.println("** old style: Detected amount= " + event.get("amount"));
+			System.out.println(newEvents.length + " " + oldEvents);
+		}
+	}

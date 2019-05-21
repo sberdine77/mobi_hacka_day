@@ -11,7 +11,7 @@ public class Send {
 		try (Connection connection = factory.newConnection();
 			Channel channel = connection.createChannel()) {
 			channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-			String message = "{\"unidade\": \"3333\", \"empresa\": \"Empresa_13\", \"matricula\": \"3333\", \"instante\": \"2018-01-01 23:13:42.740\", \"latitude\": -8.001390563622275, \"longetude\": -34.87022658976693}\n";
+			String message = "Hello World!";
 			channel.basicPublish("", QUEUE_NAME, null, message.getBytes());
 			System.out.println(" [x] Sent '" + message + "'");
 		}

@@ -21,7 +21,7 @@ public class Recv {
 	        String message = new String(delivery.getBody(), "UTF-8");
 	        System.out.println(" [x] Received '" + message + "'");
 	        Gson g = new Gson();
-	        Log log = g.fromJson(message, Log.class);
+	        Log log = g.fromJson(message, Log.class)
 	    };
 	    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
 	    
