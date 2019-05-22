@@ -34,12 +34,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
-@ServerEndpoint("/teste")
+@ServerEndpoint("/endpoint")
 public class Main {
 	
 	private static List<UpdateListener> listeners = new ArrayList<UpdateListener>();
 	private static Set<Session> peers = Collections.synchronizedSet(new HashSet());
-	private EPCompiler compiler = EPCompilerProvider.getCompiler();
+	private static EPCompiler compiler = EPCompilerProvider.getCompiler();
 	private static Configuration configuration = new Configuration();
 	
 	private final static String QUEUE_NAME = "hello";
@@ -49,14 +49,13 @@ public class Main {
 		String[] array;
 		array = mensagem.split("-");
 		if (array[0].equals("getLogFromBusId")) {
-			getLogFromBusId(Integer.parseInt(array[1]), session.getId());
+			getLogFromBusId(Integer.parseInt(array[1]), session);
 		}
     }
 	
 	@OnOpen
 	public void onOpen(Session session, @PathParam("client-id") String clientId) {
 		System.out.println("mediator: opened websocket channel for client " + clientId);
-		peers.add(session);
 	}
 	
 	@OnClose
@@ -89,6 +88,10 @@ public class Main {
 	        
 	    };
 	    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
+	    
+	    //Session s = null;
+	    
+	    //getLogFromBusId(3333, s);
 		
 		/*new Thread(new Runnable() {
 			public void run() {
@@ -107,8 +110,7 @@ public class Main {
 		}).start();*/
 	}
 	
-	public void getLogFromBusId (int id, String sessionId) throws IOException, TimeoutException {
-		
+	public static void getLogFromBusId (int id, Session s) throws IOException, TimeoutException {
 		
 		configuration.getCommon().addEventType(Log.class);
 
@@ -131,46 +133,11 @@ public class Main {
 		
 		EPStatement statement = runtime.getDeploymentService().getStatement(deployment.getDeploymentId(), "getLogFromBusId");
 		
-		EsperListener listener = new EsperListener();
+		EsperListener listener = new EsperListener(s);
 		//statement.addListener((UpdateListener) listener);
-		statement.addListener((newData, oldData, mystatement, myruntime) -> {
-			System.out.println(mystatement.getName() + " events " + (newData == null ? " null " : newData.length));
-			String latitude = (String) newData[0].get("latitude");
-			String longitude = (String) newData[0].get("longitude");
-			String location = latitude + ", " + longitude;
-			for (Session s : peers) {
-				if (s.getId().equals(sessionId)) {
-					try {
-						s.getBasicRemote().sendText(location);
-					}  catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		});
+		statement.addListener(listener);
+		peers.add(s);
 		//listeners.add((UpdateListener) listener);
-		
-		//rabbitmq
-		ConnectionFactory factory = new ConnectionFactory();
-	    factory.setHost("localhost");
-	    Connection connection = factory.newConnection();
-	    Channel channel = connection.createChannel();
-
-	    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-	    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-	    
-	    
-	    DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-	        String message = new String(delivery.getBody(), "UTF-8");
-	        Gson g = new Gson();
-		    Log log = g.fromJson(message, Log.class);
-		    runtime.getEventService().sendEventBean(log, "Log");
-	        System.out.println(" [x] Received '" + message + "'");
-	    };
-	    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
-	    //rabbitmq_end
-	    
-		
 		
 	}
 	

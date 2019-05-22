@@ -1,5 +1,5 @@
 public class Log {
-	private int id;
+	private int unidade;
 	private String empresa;
 	private String matricula;
 	private String timeStamp;
@@ -8,8 +8,8 @@ public class Log {
 	
 	public Log() {}
 	
-	public Log(int id, String empresa, String matricula, String timeStamp, String latitude, String longitude) {
-		this.id = id;
+	public Log(int unidade, String empresa, String matricula, String timeStamp, String latitude, String longitude) {
+		this.unidade = unidade;
 		this.empresa = empresa;
 		this.matricula = matricula;
 		this.timeStamp = timeStamp;
@@ -17,31 +17,31 @@ public class Log {
 		this.longitude = longitude;
 	}
 	
-	public double id() {
-		return id;
+	public double getId() {
+		return unidade;
 	}
-	public String empresa() {
+	public String getEmpresa() {
 		return empresa;
 	}
 	
-	public String matricula() {
+	public String getMatricula() {
 		return matricula;
 	}
 	
-	public String timeStamp() {
+	public String getTimeStamp() {
 		return timeStamp;
 	}
 	
-	public String latitude() {
+	public String getLatitude() {
 		return latitude;
 	}
 	
-	public String longitude() {
+	public String getLongitude() {
 		return longitude;
 	}
 	
-	public void setId(int id) {
-		this.id = id;
+	public void setUnidade(int unidade) {
+		this.unidade = unidade;
 	}
 	
 	public void setEmpresa(String empresa) {
@@ -65,6 +65,6 @@ public class Log {
 	}
 	
 	public String toString() {
-		return "Id: " + String.valueOf(id) + ", Empresa: " + empresa + ", Matrícula: " + matricula + ", TimeStamp: " + timeStamp + ", Latitude: " + latitude + ", Longitude: " + longitude;
+		return "Unidade: " + String.valueOf(unidade) + ", Empresa: " + empresa + ", Matrícula: " + matricula + ", TimeStamp: " + timeStamp + ", Latitude: " + latitude + ", Longitude: " + longitude;
 	}
 }
