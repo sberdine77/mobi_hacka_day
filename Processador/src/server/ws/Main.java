@@ -43,6 +43,8 @@ public class Main {
 	 * prioridade imediata em sequer fazer um controle mais simples*/
 	private static List<UpdateListener> listeners = new ArrayList<UpdateListener>();
 	private static Set<Session> peers = Collections.synchronizedSet(new HashSet());
+	private static Map<Session, EPStatement> connections = new HashMap<Session, EPStatement>();
+	
 	
 	private static EPCompiler compiler = EPCompilerProvider.getCompiler();
 	private static Configuration configuration = new Configuration();
@@ -64,8 +66,9 @@ public class Main {
      * como parâmetro para poder excluíla do peers no encerramento de uma conexão.*/
     //Marcador websocket
     @OnClose
-    public void onClose() {
+    public void onClose(Session s) {
 		System.out.println("Closing server...");
+		connections.remove(s);
 	}
     
     /*Pronto: Ao receber uma mensagem via websocket, dou split e verifico 
@@ -155,6 +158,10 @@ public static void main (String args[]) throws IOException, TimeoutException {
  * com quem chamou a função.*/
 public static void getLogFromBusId (String id, Session s) throws IOException, TimeoutException {
 	
+	if (connections.containsKey(s)) {
+		connections.get(s).removeAllListeners();
+	}
+	
 	configuration.getCommon().addEventType(Log2.class);
 
 	CompilerArguments cargs = new CompilerArguments(configuration);
@@ -179,16 +186,17 @@ public static void getLogFromBusId (String id, Session s) throws IOException, Ti
 	
 	/*Adiciona um listener ao statement (select). Ele é chamado toda vez que uma
 	 * entrada do Esper (log) bate com o filtro aplicado no select*/
-	EsperListener listener = new EsperListener(s); //recebe a session como parâmetro para poder enviar o resultado para a mesma conexão
+	EsperListener listener = new EsperListener(s, statement); //recebe a session como parâmetro para poder enviar o resultado para a mesma conexão
 	//statement.addListener((UpdateListener) listener);
 	statement.addListener(listener);
-	peers.add(s);
+	connections.put(s, statement);
 	//listeners.add((UpdateListener) listener);
 	
 }
 
 //A fazer, mas não é mais necessário
 public void getLogFromAllBuses (String id, Session s) {
+	
 	configuration.getCommon().addEventType(Log2.class);
 
 	CompilerArguments cargs = new CompilerArguments(configuration);
@@ -213,15 +221,18 @@ public void getLogFromAllBuses (String id, Session s) {
 	
 	/*Adiciona um listener ao statement (select). Ele é chamado toda vez que uma
 	 * entrada do Esper (log) bate com o filtro aplicado no select*/
-	EsperListener listener = new EsperListener(s); //recebe a session como parâmetro para poder enviar o resultado para a mesma conexão
+	EsperListener listener = new EsperListener(s, statement); //recebe a session como parâmetro para poder enviar o resultado para a mesma conexão
 	//statement.addListener((UpdateListener) listener);
 	statement.addListener(listener);
-	peers.add(s);
 }
 
 /*A fazer, similar ao getLogFromBusId, porém criará vários statments interando sobre a 
  * entrada cada um com seu respectivo listener,*/
 	public void getLogFromSomeBusIds (String[] id, Session s) {
+		
+		if (connections.containsKey(s)) {
+			connections.get(s).removeAllListeners();
+		}
 		
 		for (int i = 0; i < id.length; i++) {
 			configuration.getCommon().addEventType(Log2.class);
@@ -248,10 +259,11 @@ public void getLogFromAllBuses (String id, Session s) {
 			
 			/*Adiciona um listener ao statement (select). Ele é chamado toda vez que uma
 			 * entrada do Esper (log) bate com o filtro aplicado no select*/
-			EsperListener listener = new EsperListener(s); //recebe a session como parâmetro para poder enviar o resultado para a mesma conexão
+			EsperListener listener = new EsperListener(s, statement); //recebe a session como parâmetro para poder enviar o resultado para a mesma conexão
 			//statement.addListener((UpdateListener) listener);
 			statement.addListener(listener);
-			peers.add(s);
+			connections.put(s, statement);
+			
 		}
 	
 	}

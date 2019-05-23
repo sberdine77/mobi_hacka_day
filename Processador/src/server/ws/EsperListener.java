@@ -15,11 +15,13 @@ import com.espertech.esper.runtime.client.UpdateListener;
 public class EsperListener implements UpdateListener {
 	
 	private Session s;
+	private EPStatement statement;
 	
 	/*Construtor personalizado para ter acesso à session do user que o chamou
 	 * para enviar o resultado já tratado (Log de um bus es[ecífico)*/
-	public EsperListener (Session s) {
+	public EsperListener (Session s, EPStatement statement) {
 		this.s = s;
+		this.statement = statement;
 	}
 	
 	/*newEvents é o array de eventos que atendem ao select do statement a qual este
@@ -27,9 +29,10 @@ public class EsperListener implements UpdateListener {
 	@Override
 	public void update(EventBean[] newEvents, EventBean[] oldEvents, EPStatement statment, EPRuntime runtime) {
 		System.out.println(statment.getName() + " events " + (newEvents == null ? " null " : newEvents.length));
+		Integer unidade = (Integer) newEvents[0].get("unidade");
 		String latitude = (String) newEvents[0].get("latitude");
 		String longitude = (String) newEvents[0].get("longitude");
-		String location = latitude + ", " + longitude;
+		String location = Integer.toString(unidade.intValue()) + "," + latitude + "," + longitude;
 		/*Aqui faço a real tentativa de envio do log filtrado de volta para a mesma
 		 * websocket session que chamou o listener. Como o websocket endpoint roda no Tomcat
 		 * e no Tomcat este listener aparentemente não é chamado, este envio não acontece.*/
