@@ -1,29 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 8 [1.8.0_111]">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v9.0">
-		<attributes>
-			<attribute name="owner.project.facets" value="jst.web"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/javax.websocket-api-1.1.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/gson-2.6.2.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/slf4j-simple-1.7.25.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/amqp-client-5.5.1.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/esper-runtime-8.1.0.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/esper-compiler-8.1.0.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/esper-common-avro-8.1.0.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/esper-common-8.1.0.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/commons-compiler-3.0.10.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/janino-3.0.10.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/slf4j-api-1.7.25.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/antlr4-runtime-4.7.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v9.0"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

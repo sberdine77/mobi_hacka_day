@@ -42,7 +42,7 @@ public class Main {
 	 * sessions. Idealmente existiria uma ou duas classes hendlers. Porém não vi 
 	 * prioridade imediata em sequer fazer um controle mais simples*/
 	private static List<UpdateListener> listeners = new ArrayList<UpdateListener>();
-	private static Set<Session> peers = Collections.synchronizedSet(new HashSet());
+	private static Set<Session> peers = Collections.synchronizedSet(new HashSet<Session>());
 	
 	private static EPCompiler compiler = EPCompilerProvider.getCompiler();
 	private static Configuration configuration = new Configuration();
