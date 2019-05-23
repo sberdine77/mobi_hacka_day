@@ -53,6 +53,11 @@ public class Main {
     @OnOpen
     public void onOpen() {
 		System.out.println("Server opening...");
+		try {
+			Main.main(null);
+		} catch (IOException | TimeoutException e) {
+			e.printStackTrace();
+		}
 	}
     
     /*Se for utilizar a variável peers para controle de sessões, receber aqui a session
@@ -99,7 +104,9 @@ public static void main (String args[]) throws IOException, TimeoutException {
 	    Connection connection = factory.newConnection();
 	    Channel channel = connection.createChannel();
 
-	    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+	    String fila = "logs";
+	    
+	    channel.queueDeclare(fila, false, false, false, null);
 	    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 	    
 	    DeliverCallback deliverCallback = (consumerTag, delivery) -> {
@@ -110,7 +117,7 @@ public static void main (String args[]) throws IOException, TimeoutException {
 	        runtime.getEventService().sendEventBean(log2, "Log2");
 	        
 	    };
-	    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
+	    channel.basicConsume(fila, true, deliverCallback, consumerTag -> { });
 	    //RabbitMq_end
 		
 	    
@@ -181,6 +188,8 @@ public void getLogFromAllBuses () {
 /*A fazer, similar ao getLogFromBusId, porém criará vários statments interando sobre a 
  * entrada cada um com seu respectivo listener,*/
 public void getLogFromSomeBusIds (String[] id, Session s) {
+	
+	
 	
 }
  
