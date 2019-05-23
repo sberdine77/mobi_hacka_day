@@ -1,6 +1,6 @@
 package server.ws;
 public class Log {
-	private int unidade;
+	private String unidade;
 	private String empresa;
 	private String matricula;
 	private String timeStamp;
@@ -9,7 +9,7 @@ public class Log {
 	
 	public Log() {}
 	
-	public Log(int unidade, String empresa, String matricula, String timeStamp, String latitude, String longitude) {
+	public Log(String unidade, String empresa, String matricula, String timeStamp, String latitude, String longitude) {
 		this.unidade = unidade;
 		this.empresa = empresa;
 		this.matricula = matricula;
@@ -18,7 +18,7 @@ public class Log {
 		this.longitude = longitude;
 	}
 	
-	public double getId() {
+	public String getUnidade() {
 		return unidade;
 	}
 	public String getEmpresa() {
@@ -41,7 +41,7 @@ public class Log {
 		return longitude;
 	}
 	
-	public void setUnidade(int unidade) {
+	public void setUnidade(String unidade) {
 		this.unidade = unidade;
 	}
 	

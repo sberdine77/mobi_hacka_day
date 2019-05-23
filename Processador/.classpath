@@ -13,18 +13,17 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Downloads/esper-8.1.0/esper-common-8.1.0.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Downloads/esper-8.1.0/esper-common-avro-8.1.0.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Downloads/esper-8.1.0/esper-compiler-8.1.0.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Downloads/esper-8.1.0/esper-runtime-8.1.0.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Downloads/esper-8.1.0/dependencies/compiler/antlr4-runtime-4.7.1.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Downloads/esper-8.1.0/dependencies/compiler/commons-compiler-3.0.10.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Downloads/esper-8.1.0/dependencies/compiler/janino-3.0.10.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Downloads/esper-8.1.0/dependencies/compiler/slf4j-api-1.7.25.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/javax.websocket-api-1.1.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/gson-2.6.2.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/slf4j-simple-1.7.25.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/slf4j-api-1.7.25.jar"/>
-	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/amqp-client-5.5.1.jar"/>
+	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/javax.websocket-api-1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/gson-2.6.2.jar"/>
+	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/slf4j-simple-1.7.25.jar"/>
+	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/amqp-client-5.5.1.jar"/>
+	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/esper-runtime-8.1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/esper-compiler-8.1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/esper-common-avro-8.1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/esper-common-8.1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/commons-compiler-3.0.10.jar"/>
+	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/janino-3.0.10.jar"/>
+	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="lib" path="/Users/savioberdine/Documents/Projects/Hacka_Day/Processador/src/server/ws/antlr4-runtime-4.7.1.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

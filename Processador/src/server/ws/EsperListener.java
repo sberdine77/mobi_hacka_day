@@ -12,8 +12,8 @@ public class EsperListener implements UpdateListener {
 	
 	private Session s;
 	
-	public EsperListener (Session s) {
-		this.s = s;
+	public EsperListener (/*Session s*/) {
+		//this.s = s;
 	}
 	
 	@Override

@@ -56,11 +56,12 @@ public class Main {
 	}
      
     @OnMessage
-    public void recebeMensagem(String mensagem, Session session, @PathParam("client-id") String clientId) throws NumberFormatException, IOException, TimeoutException {
+    public void recebeMensagem(String mensagem, Session session) throws NumberFormatException, IOException, TimeoutException {
 		String[] array;
 		array = mensagem.split("-");
 		if (array[0].equals("getLogFromBusId")) {
-			getLogFromBusId(Integer.parseInt(array[1]), session);
+			System.out.println("Tá prontin pra chamar a função..." + array[1]);
+			//getLogFromBusId(array[1], session);
 		}
     }
  
@@ -71,7 +72,7 @@ public class Main {
     
 public static void main (String args[]) throws IOException, TimeoutException {
 		
-		configuration.getCommon().addEventType(Log.class);
+		configuration.getCommon().addEventType(Log2.class);
 		
 		EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(configuration);
 		
@@ -87,11 +88,38 @@ public static void main (String args[]) throws IOException, TimeoutException {
 	        String message = new String(delivery.getBody(), "UTF-8");
 	        System.out.println(" [x] Received '" + message + "'");
 	        Gson g = new Gson();
-	        Log log = g.fromJson(message, Log.class);
-	        runtime.getEventService().sendEventBean(log, "Log");
+	        Log2 log2 = g.fromJson(message, Log2.class);
+	        runtime.getEventService().sendEventBean(log2, "Log2");
 	        
 	    };
 	    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
+	    
+	    configuration.getCommon().addEventType(Log2.class);
+
+		CompilerArguments cargs = new CompilerArguments(configuration);
+		EPCompiled epCompiled;
+		String id = "3333";
+		//configuration.getEPAdministrator().getConfiguration().addEventTypeAlias("Log", Log.class); 
+		try {
+			String str = "@name('getLogFromBusId') select * from Log2 where unidade =  " + id + " ";
+			System.out.println(str);
+			epCompiled = compiler.compile(str, cargs);
+		} catch (EPCompileException ex) {
+			throw new RuntimeException(ex);
+		}
+		//EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(configuration);
+		EPDeployment deployment;
+		try {
+			deployment = runtime.getDeploymentService().deploy(epCompiled);
+		} catch (EPDeployException ex) {
+			throw new RuntimeException(ex);
+		}
+		
+		EPStatement statement = runtime.getDeploymentService().getStatement(deployment.getDeploymentId(), "getLogFromBusId");
+		
+		EsperListener listener = new EsperListener();
+		//statement.addListener((UpdateListener) listener);
+		statement.addListener(listener);
 	    
 	    //Session s = null;
 	    
@@ -114,15 +142,16 @@ public static void main (String args[]) throws IOException, TimeoutException {
 		}).start();*/
 	}
 
-public static void getLogFromBusId (int id, Session s) throws IOException, TimeoutException {
+/*public static void getLogFromBusId (String id, Session s) throws IOException, TimeoutException {
 	
-	configuration.getCommon().addEventType(Log.class);
+	configuration.getCommon().addEventType(Log2.class);
 
 	CompilerArguments cargs = new CompilerArguments(configuration);
 	EPCompiled epCompiled;
-	
+	//configuration.getEPAdministrator().getConfiguration().addEventTypeAlias("Log", Log.class); 
 	try {
-		String str = "@name('getLogFromBusId') select * from Log where id =  " + Integer.toString(id);
+		String str = "@name('getLogFromBusId') select * from Log2 where unidade =  " + id + " ";
+		System.out.println(str);
 		epCompiled = compiler.compile(str, cargs);
 	} catch (EPCompileException ex) {
 		throw new RuntimeException(ex);
@@ -143,7 +172,7 @@ public static void getLogFromBusId (int id, Session s) throws IOException, Timeo
 	peers.add(s);
 	//listeners.add((UpdateListener) listener);
 	
-}
+}*/
 
 public void getLogFromAllBuses () {
 	
