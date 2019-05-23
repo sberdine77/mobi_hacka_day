@@ -98,19 +98,28 @@ public static void main (String args[]) throws IOException, TimeoutException {
 	    factory.setHost("localhost");
 	    Connection connection = factory.newConnection();
 	    Channel channel = connection.createChannel();
-
-	    channel.queueDeclare(QUEUE_NAME, false, false, false, null);
+	    String fila = "logs";
+	    
+	    int[] counter = {0};
+	    
+	    channel.queueDeclare(fila, false, false, false, null);
 	    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
 	    
 	    DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 	        String message = new String(delivery.getBody(), "UTF-8");
-	        System.out.println(" [x] Received '" + message + "'");
+	        System.out.println(message);
 	        Gson g = new Gson();
 	        Log2 log2 = g.fromJson(message, Log2.class);
 	        runtime.getEventService().sendEventBean(log2, "Log2");
 	        
 	    };
-	    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
+	    
+	  
+	    
+	    channel.basicConsume(fila, true, deliverCallback, consumerTag -> { });
+	   
+	    
+	    
 	    //RabbitMq_end
 		
 	    
