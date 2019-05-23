@@ -74,12 +74,19 @@ public class Main {
      * que estará entrando no Esper*/
     @OnMessage //Marcador websocket
     public void recebeMensagem(String mensagem, Session session) throws NumberFormatException, IOException, TimeoutException {
-		String[] array;
-		array = mensagem.split("-");
-		if (array[0].equals("getLogFromBusId")) {
-			System.out.println("Tá prontin pra chamar a função..." + array[1]);
-			getLogFromBusId(array[1], session);
-		}
+        String[] array;
+        array = mensagem.split("-");
+        if (array[0].equals("getLogFromBusId")) {
+          System.out.println("Tá prontin pra chamar a função..." + array[1]);
+          getLogFromBusId(array[1], session);
+        } else if (array[0].equals("getLogFromAllBuses")) {
+          System.out.println("Tá prontin pra chamar a função..." + array[1]);
+          getLogFromAllBuses(array[1], session);
+        } else if (array[0].equals("getLogFromSomeBusIds")) {
+          System.out.println("Tá prontin pra chamar a função..." + array[1]);
+          String[] ids = array[1].split(",");
+          getLogFromSomeBusIds(ids, session);
+        }
     }
  
     //Marcador websocket
@@ -181,16 +188,72 @@ public static void getLogFromBusId (String id, Session s) throws IOException, Ti
 }
 
 //A fazer, mas não é mais necessário
-public void getLogFromAllBuses () {
+public void getLogFromAllBuses (String id, Session s) {
+	configuration.getCommon().addEventType(Log2.class);
+
+	CompilerArguments cargs = new CompilerArguments(configuration);
+	EPCompiled epCompiled;
+	//configuration.getEPAdministrator().getConfiguration().addEventTypeAlias("Log", Log.class); 
+	try {
+		//Cria o select filtrando pelo ID requisitado
+		String str = "@name('getLogFromBusId') select * from Log2 ";
+		System.out.println(str);
+		epCompiled = compiler.compile(str, cargs);
+	} catch (EPCompileException ex) {
+		throw new RuntimeException(ex);
+	}
+	EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(configuration);
+	EPDeployment deployment;
+	try {
+		deployment = runtime.getDeploymentService().deploy(epCompiled);
+	} catch (EPDeployException ex) {
+		throw new RuntimeException(ex);
+	}
+	EPStatement statement = runtime.getDeploymentService().getStatement(deployment.getDeploymentId(), "getLogFromBusId");
 	
+	/*Adiciona um listener ao statement (select). Ele é chamado toda vez que uma
+	 * entrada do Esper (log) bate com o filtro aplicado no select*/
+	EsperListener listener = new EsperListener(s); //recebe a session como parâmetro para poder enviar o resultado para a mesma conexão
+	//statement.addListener((UpdateListener) listener);
+	statement.addListener(listener);
+	peers.add(s);
 }
 
 /*A fazer, similar ao getLogFromBusId, porém criará vários statments interando sobre a 
  * entrada cada um com seu respectivo listener,*/
-public void getLogFromSomeBusIds (String[] id, Session s) {
+	public void getLogFromSomeBusIds (String[] id, Session s) {
+		
+		for (int i = 0; i < id.length; i++) {
+			configuration.getCommon().addEventType(Log2.class);
+
+			CompilerArguments cargs = new CompilerArguments(configuration);
+			EPCompiled epCompiled;
+			//configuration.getEPAdministrator().getConfiguration().addEventTypeAlias("Log", Log.class); 
+			try {
+				//Cria o select filtrando pelo ID requisitado
+				String str = "@name('getLogFromBusId') select * from Log2 where unidade =  " + id[i] + " ";
+				System.out.println(str);
+				epCompiled = compiler.compile(str, cargs);
+			} catch (EPCompileException ex) {
+				throw new RuntimeException(ex);
+			}
+			EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(configuration);
+			EPDeployment deployment;
+			try {
+				deployment = runtime.getDeploymentService().deploy(epCompiled);
+			} catch (EPDeployException ex) {
+				throw new RuntimeException(ex);
+			}
+			EPStatement statement = runtime.getDeploymentService().getStatement(deployment.getDeploymentId(), "getLogFromBusId");
+			
+			/*Adiciona um listener ao statement (select). Ele é chamado toda vez que uma
+			 * entrada do Esper (log) bate com o filtro aplicado no select*/
+			EsperListener listener = new EsperListener(s); //recebe a session como parâmetro para poder enviar o resultado para a mesma conexão
+			//statement.addListener((UpdateListener) listener);
+			statement.addListener(listener);
+			peers.add(s);
+		}
 	
-	
-	
-}
+	}
  
 }
