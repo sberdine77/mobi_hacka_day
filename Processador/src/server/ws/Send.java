@@ -3,6 +3,8 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
 
+/*Classe para testes com o Rabbitmq. Não tem relevância para o projeto final. 
+ * Favor, não excluir até pouco antes do envio pois ela ainda poderá ser útil.*/
 public class Send {
 	
 	private final static String QUEUE_NAME = "hello";

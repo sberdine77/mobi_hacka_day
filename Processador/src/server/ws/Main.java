@@ -34,28 +34,40 @@ import com.rabbitmq.client.DeliverCallback;
 
 import java.util.*;
 
- 
+//Marcador websocket
 @ServerEndpoint("/websocketendpoint")
 public class Main {
 	
+	/*Possíveis variáveis para controle de exclusão de listeners do Esper e websocket
+	 * sessions. Idealmente existiria uma ou duas classes hendlers. Porém não vi 
+	 * prioridade imediata em sequer fazer um controle mais simples*/
 	private static List<UpdateListener> listeners = new ArrayList<UpdateListener>();
 	private static Set<Session> peers = Collections.synchronizedSet(new HashSet());
+	
 	private static EPCompiler compiler = EPCompilerProvider.getCompiler();
 	private static Configuration configuration = new Configuration();
 	
 	private final static String QUEUE_NAME = "hello";
-     
+    
+	//Marcador websocket
     @OnOpen
     public void onOpen() {
 		System.out.println("Server opening...");
 	}
-     
+    
+    /*Se for utilizar a variável peers para controle de sessões, receber aqui a session
+     * como parâmetro para poder excluíla do peers no encerramento de uma conexão.*/
+    //Marcador websocket
     @OnClose
     public void onClose() {
 		System.out.println("Closing server...");
 	}
-     
-    @OnMessage
+    
+    /*Pronto: Ao receber uma mensagem via websocket, dou split e verifico 
+     * se a pessoa está requisitando o id de um ônibus específico. 
+     * Se sim, chamo uma função que irá chamar dar um select com este ID no stream
+     * que estará entrando no Esper*/
+    @OnMessage //Marcador websocket
     public void recebeMensagem(String mensagem, Session session) throws NumberFormatException, IOException, TimeoutException {
 		String[] array;
 		array = mensagem.split("-");
@@ -65,6 +77,7 @@ public class Main {
 		}
     }
  
+    //Marcador websocket
     @OnError
     public void onError(Throwable e){
         e.printStackTrace();
@@ -76,6 +89,11 @@ public static void main (String args[]) throws IOException, TimeoutException {
 		
 		EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(configuration);
 		
+		//RabbitMQ_start
+		/*Pronto: já está recebendo de uma fila o formato do log (Pode ser visto
+		 * um exemplo na classe Send.java). Converte de JSON para o tipo de dados
+		 * que criei (Log2) e (Parte do Esper agora..) envia o evento para tratamento
+		 * do Esper*/
 		ConnectionFactory factory = new ConnectionFactory();
 	    factory.setHost("localhost");
 	    Connection connection = factory.newConnection();
@@ -93,7 +111,7 @@ public static void main (String args[]) throws IOException, TimeoutException {
 	        
 	    };
 	    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
-	    
+	    //RabbitMq_end
 		
 	    
 	    //Session s = null;
@@ -116,7 +134,11 @@ public static void main (String args[]) throws IOException, TimeoutException {
 			}
 		}).start();*/
 	}
-
+/*Pronto: função que é chamada quando o server recebe uma requisição válida para
+ * retornar o log de um ônibus com ID específico.
+ * Parâmetros: String iD -> ID (unidade) do ônibus
+ * Session s -> referência para uma websocket session para posterior comunicação
+ * com quem chamou a função.*/
 public static void getLogFromBusId (String id, Session s) throws IOException, TimeoutException {
 	
 	configuration.getCommon().addEventType(Log2.class);
@@ -125,6 +147,7 @@ public static void getLogFromBusId (String id, Session s) throws IOException, Ti
 	EPCompiled epCompiled;
 	//configuration.getEPAdministrator().getConfiguration().addEventTypeAlias("Log", Log.class); 
 	try {
+		//Cria o select filtrando pelo ID requisitado
 		String str = "@name('getLogFromBusId') select * from Log2 where unidade =  " + id + " ";
 		System.out.println(str);
 		epCompiled = compiler.compile(str, cargs);
@@ -138,10 +161,11 @@ public static void getLogFromBusId (String id, Session s) throws IOException, Ti
 	} catch (EPDeployException ex) {
 		throw new RuntimeException(ex);
 	}
-	
 	EPStatement statement = runtime.getDeploymentService().getStatement(deployment.getDeploymentId(), "getLogFromBusId");
 	
-	EsperListener listener = new EsperListener(s);
+	/*Adiciona um listener ao statement (select). Ele é chamado toda vez que uma
+	 * entrada do Esper (log) bate com o filtro aplicado no select*/
+	EsperListener listener = new EsperListener(s); //recebe a session como parâmetro para poder enviar o resultado para a mesma conexão
 	//statement.addListener((UpdateListener) listener);
 	statement.addListener(listener);
 	peers.add(s);
@@ -149,11 +173,14 @@ public static void getLogFromBusId (String id, Session s) throws IOException, Ti
 	
 }
 
+//A fazer, mas não é mais necessário
 public void getLogFromAllBuses () {
 	
 }
 
-public void getLogFromSomeBusIds (int[] ids) {
+/*A fazer, similar ao getLogFromBusId, porém criará vários statments interando sobre a 
+ * entrada cada um com seu respectivo listener,*/
+public void getLogFromSomeBusIds (String[] id, Session s) {
 	
 }
  
