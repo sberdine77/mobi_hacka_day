@@ -12,8 +12,8 @@ public class EsperListener implements UpdateListener {
 	
 	private Session s;
 	
-	public EsperListener (/*Session s*/) {
-		//this.s = s;
+	public EsperListener (Session s) {
+		this.s = s;
 	}
 	
 	@Override
@@ -21,7 +21,7 @@ public class EsperListener implements UpdateListener {
 		System.out.println(statment.getName() + " events " + (newEvents == null ? " null " : newEvents.length));
 		String latitude = (String) newEvents[0].get("latitude");
 		String longitude = (String) newEvents[0].get("longitude");
-		String location = latitude + ", " + longitude;
+		String location = "OLÁ";
 		try {
 			s.getBasicRemote().sendText(location);
 		}  catch (IOException e) {

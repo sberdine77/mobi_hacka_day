@@ -61,7 +61,7 @@ public class Main {
 		array = mensagem.split("-");
 		if (array[0].equals("getLogFromBusId")) {
 			System.out.println("Tá prontin pra chamar a função..." + array[1]);
-			//getLogFromBusId(array[1], session);
+			getLogFromBusId(array[1], session);
 		}
     }
  
@@ -72,7 +72,7 @@ public class Main {
     
 public static void main (String args[]) throws IOException, TimeoutException {
 		
-		configuration.getCommon().addEventType(Log2.class);
+		configuration.getCommon().addEventType("Log2", Log2.class);
 		
 		EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(configuration);
 		
@@ -94,32 +94,7 @@ public static void main (String args[]) throws IOException, TimeoutException {
 	    };
 	    channel.basicConsume(QUEUE_NAME, true, deliverCallback, consumerTag -> { });
 	    
-	    configuration.getCommon().addEventType(Log2.class);
-
-		CompilerArguments cargs = new CompilerArguments(configuration);
-		EPCompiled epCompiled;
-		String id = "3333";
-		//configuration.getEPAdministrator().getConfiguration().addEventTypeAlias("Log", Log.class); 
-		try {
-			String str = "@name('getLogFromBusId') select * from Log2 where unidade =  " + id + " ";
-			System.out.println(str);
-			epCompiled = compiler.compile(str, cargs);
-		} catch (EPCompileException ex) {
-			throw new RuntimeException(ex);
-		}
-		//EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(configuration);
-		EPDeployment deployment;
-		try {
-			deployment = runtime.getDeploymentService().deploy(epCompiled);
-		} catch (EPDeployException ex) {
-			throw new RuntimeException(ex);
-		}
 		
-		EPStatement statement = runtime.getDeploymentService().getStatement(deployment.getDeploymentId(), "getLogFromBusId");
-		
-		EsperListener listener = new EsperListener();
-		//statement.addListener((UpdateListener) listener);
-		statement.addListener(listener);
 	    
 	    //Session s = null;
 	    
@@ -142,7 +117,7 @@ public static void main (String args[]) throws IOException, TimeoutException {
 		}).start();*/
 	}
 
-/*public static void getLogFromBusId (String id, Session s) throws IOException, TimeoutException {
+public static void getLogFromBusId (String id, Session s) throws IOException, TimeoutException {
 	
 	configuration.getCommon().addEventType(Log2.class);
 
@@ -172,7 +147,7 @@ public static void main (String args[]) throws IOException, TimeoutException {
 	peers.add(s);
 	//listeners.add((UpdateListener) listener);
 	
-}*/
+}
 
 public void getLogFromAllBuses () {
 	
