@@ -44,8 +44,10 @@ public class Main {
 	private static List<UpdateListener> listeners = new ArrayList<UpdateListener>();
 	private static Set<Session> peers = Collections.synchronizedSet(new HashSet());
 	
-	private static EPCompiler compiler = EPCompilerProvider.getCompiler();
-	private static Configuration configuration = new Configuration();
+	private static EPCompiler compiler;
+	private static Configuration configuration;
+	
+	private static EsperHandler espHandler;
 	
 	private final static String QUEUE_NAME = "hello";
     
@@ -53,6 +55,12 @@ public class Main {
     @OnOpen
     public void onOpen() {
 		System.out.println("Server opening...");
+		try {
+			Main.main(null);
+		} catch (IOException | TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
     
     /*Se for utilizar a variável peers para controle de sessões, receber aqui a session
@@ -85,9 +93,18 @@ public class Main {
     
 public static void main (String args[]) throws IOException, TimeoutException {
 		
+	System.out.println("AQUI NA MAIN BB");
+	
+	configuration = new Configuration();
+	
 		configuration.getCommon().addEventType("Log2", Log2.class);
+		compiler = EPCompilerProvider.getCompiler();
+		
 		
 		EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(configuration);
+		CompilerArguments cargs = new CompilerArguments(configuration);
+		
+		espHandler = new EsperHandler(configuration, runtime, cargs, compiler);
 		
 		//RabbitMQ_start
 		/*Pronto: já está recebendo de uma fila o formato do log (Pode ser visto
@@ -140,36 +157,9 @@ public static void main (String args[]) throws IOException, TimeoutException {
  * Session s -> referência para uma websocket session para posterior comunicação
  * com quem chamou a função.*/
 public static void getLogFromBusId (String id, Session s) throws IOException, TimeoutException {
-	
-	configuration.getCommon().addEventType(Log2.class);
-
-	CompilerArguments cargs = new CompilerArguments(configuration);
-	EPCompiled epCompiled;
-	//configuration.getEPAdministrator().getConfiguration().addEventTypeAlias("Log", Log.class); 
-	try {
-		//Cria o select filtrando pelo ID requisitado
-		String str = "@name('getLogFromBusId') select * from Log2 where unidade =  " + id + " ";
-		System.out.println(str);
-		epCompiled = compiler.compile(str, cargs);
-	} catch (EPCompileException ex) {
-		throw new RuntimeException(ex);
-	}
-	EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(configuration);
-	EPDeployment deployment;
-	try {
-		deployment = runtime.getDeploymentService().deploy(epCompiled);
-	} catch (EPDeployException ex) {
-		throw new RuntimeException(ex);
-	}
-	EPStatement statement = runtime.getDeploymentService().getStatement(deployment.getDeploymentId(), "getLogFromBusId");
-	
-	/*Adiciona um listener ao statement (select). Ele é chamado toda vez que uma
-	 * entrada do Esper (log) bate com o filtro aplicado no select*/
-	EsperListener listener = new EsperListener(s); //recebe a session como parâmetro para poder enviar o resultado para a mesma conexão
-	//statement.addListener((UpdateListener) listener);
-	statement.addListener(listener);
-	peers.add(s);
-	//listeners.add((UpdateListener) listener);
+	String str = "@name('getLogFromBusId') Select * from Log2 where unidade = " + id + " ";
+	espHandler.getLogFromBusIdWithSql(str , s);
+	System.out.println("CHAMOU BB");
 	
 }
 
