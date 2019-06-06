@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Visão do fiscal</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+    <link rel="stylesheet" href="supervisor.css">
+    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=AtyLCL2FgCpSJN6syP9SFRYoZ9LHCoUyqhgu9TH61ahMjMiZF7x5L-5PMgK4Z8Ch'></script>
+    <script type="text/javascript" src="supervisor.js"></script>
+  </head>
+  <body onload="initFilter()">
+    
+    <div id='printoutPanel'></div>
+    <div id='map'></div>
+    <div id="filter">
+      <div id="checkboxes">
+        <label>Frotas</label>
+        <p id="mensagem"></p>
+        <ul id="lista">
+          <button id="tudo" onclick="markAll(true)">Marcar tudo</button>
+          <button id="nada" onclick="markAll(false)">Desmarcar tudo</button>
+          <!--<button onclick="moveAll()">hue</button>-->
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

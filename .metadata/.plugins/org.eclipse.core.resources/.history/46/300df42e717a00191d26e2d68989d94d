@@ -1,0 +1,50 @@
+public class Log {
+	private int id;
+	private String empresa;
+	private String matricula;
+	private String timeStamp;
+	private String latitude;
+	private String longitude;
+	
+	public Log() {}
+	
+	public Log(int id, String empresa, String matricula, String timeStamp, String latitude, String longitude) {
+		this.id = id;
+		this.empresa = empresa;
+		this.matricula = matricula;
+		this.timeStamp = timeStamp;
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
+	
+	public double id() {
+		return id;
+	}
+	public String empresa() {
+		return empresa;
+	}
+	
+	public String matricula() {
+		return matricula;
+	}
+	
+	public String timeStamp() {
+		return timeStamp;
+	}
+	
+	public String latitude() {
+		return latitude;
+	}
+	
+	public String longitude() {
+		return longitude;
+	}
+	
+	public void setLeitura(double leitura) {
+		this.leitura = leitura;
+	}
+	
+	public String toString() {
+		return "Temperature " + leitura;
+	}
+}
